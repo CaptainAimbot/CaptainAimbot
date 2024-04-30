@@ -17,10 +17,30 @@
             background-color: #fff;
             border: 1px solid #ccc;
         }
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <button class="btn" id="upBtn">UP</button><br>
+        <button class="btn" id="leftBtn">LEFT</button>
+        <button class="btn" id="rightBtn">RIGHT</button><br>
+        <button class="btn" id="downBtn">DOWN</button>
+    </div>
 
     <script>
         // Constants
@@ -35,16 +55,11 @@
         let score = 0;
         let direction;
 
-        // Event listener for key presses
-        document.addEventListener('keydown', directionControl);
-
-        function directionControl(event) {
-            let key = event.keyCode;
-            if (key === 37 && direction !== 'RIGHT') direction = 'LEFT';
-            else if (key === 38 && direction !== 'DOWN') direction = 'UP';
-            else if (key === 39 && direction !== 'LEFT') direction = 'RIGHT';
-            else if (key === 40 && direction !== 'UP') direction = 'DOWN';
-        }
+        // Directional buttons
+        document.getElementById('upBtn').addEventListener('click', () => direction = 'UP');
+        document.getElementById('leftBtn').addEventListener('click', () => direction = 'LEFT');
+        document.getElementById('rightBtn').addEventListener('click', () => direction = 'RIGHT');
+        document.getElementById('downBtn').addEventListener('click', () => direction = 'DOWN');
 
         // Check collision with walls and tail
         function collision(newHead, snakeArray) {
@@ -57,6 +72,12 @@
         function draw() {
             // Clear canvas
             ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+            // Draw borders if collision occurs
+            if (collision(snake[0], snake.slice(1)) || snake[0].x < 0 || snake[0].y < 0 || snake[0].x >= canvasSize || snake[0].y >= canvasSize) {
+                ctx.strokeStyle = 'yellow';
+                ctx.strokeRect(0, 0, canvasSize, canvasSize);
+            }
 
             // Draw snake
             snake.forEach(segment => {
@@ -113,6 +134,3 @@
     </script>
 </body>
 </html>
-
-
-
