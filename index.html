@@ -3,87 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Store</title>
+    <title>Snake Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #f0f0f0;
         }
-        header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 800px;
+        canvas {
+            display: block;
             margin: 20px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-gap: 20px; /* gap between grid items */
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* auto adjust columns */
-        }
-        .product {
             background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center; /* Center align content */
-        }
-        .product h2 {
-            margin-top: 0;
-        }
-        .product img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px; /* Add space below image */
-        }
-        .product button {
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .product button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Responsive styles */
-        @media screen and (max-width: 600px) {
-            .container {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjust for smaller screens */
-            }
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>PDFs By CAPTAIN</h1>
-    </header>
-    <div class="container">
-        <div class="product">
-            <img src="data:image/jpeg;base64,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" alt="PDF Title 1"> <!-- Image for PDF 1 -->
-            <h2>PDF Title 1</h2>
-            <p>Description of PDF 1.</p>
-            <button onclick="purchase('pdf1.pdf')">Purchase ($10)</button>
-        </div>
-       
-        <!-- Add more products here -->
-    </div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <script>
-        function purchase(pdfName) {
-            // Here you can implement logic for purchasing
-            alert("You have purchased: " + pdfName);
-            // Example: redirect to a download link
-            window.location.href = "https://example.com/downloads/" + pdfName;
+        // Constants
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const box = 20;
+        const canvasSize = 400;
+
+        // Initial snake position
+        let snake = [{x: 10 * box, y: 10 * box}];
+        let food = {x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box};
+        let score = 0;
+        let direction;
+
+        // Event listener for key presses
+        document.addEventListener('keydown', directionControl);
+
+        function directionControl(event) {
+            let key = event.keyCode;
+            if (key === 37 && direction !== 'RIGHT') direction = 'LEFT';
+            else if (key === 38 && direction !== 'DOWN') direction = 'UP';
+            else if (key === 39 && direction !== 'LEFT') direction = 'RIGHT';
+            else if (key === 40 && direction !== 'UP') direction = 'DOWN';
         }
+
+        // Check collision with walls and tail
+        function collision(newHead, snakeArray) {
+            return (
+                newHead.x < 0 || newHead.y < 0 || newHead.x >= canvasSize || newHead.y >= canvasSize ||
+                snakeArray.some(segment => segment.x === newHead.x && segment.y === newHead.y)
+            );
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+            // Draw snake
+            snake.forEach(segment => {
+                ctx.fillStyle = (segment === snake[0]) ? 'green' : 'lime';
+                ctx.fillRect(segment.x, segment.y, box, box);
+                ctx.strokeStyle = 'black';
+                ctx.strokeRect(segment.x, segment.y, box, box);
+            });
+
+            // Draw food
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food.x, food.y, box, box);
+            ctx.strokeStyle = 'black';
+            ctx.strokeRect(food.x, food.y, box, box);
+
+            // Move the snake
+            let newHead = {x: snake[0].x, y: snake[0].y};
+            if (direction === 'LEFT') newHead.x -= box;
+            if (direction === 'UP') newHead.y -= box;
+            if (direction === 'RIGHT') newHead.x += box;
+            if (direction === 'DOWN') newHead.y += box;
+
+            // If snake eats the food
+            if (newHead.x === food.x && newHead.y === food.y) {
+                score++;
+                food = {x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box};
+            } else {
+                snake.pop();
+            }
+
+            // Game over conditions
+            if (collision(newHead, snake)) {
+                clearInterval(game);
+                alert('Game Over! Your Score: ' + score);
+                location.reload(); // Reload the page to restart the game
+            }
+
+            snake.unshift(newHead);
+
+            // Draw score
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText('Score: ' + score, 10, 30);
+        }
+
+        // Run the game loop
+        let game = setInterval(draw, 100);
     </script>
 </body>
 </html>
+
 
