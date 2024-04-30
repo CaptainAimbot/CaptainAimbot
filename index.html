@@ -55,11 +55,19 @@
         let score = 0;
         let direction;
 
-        // Directional buttons
+        // Directional buttons for mobile control
         document.getElementById('upBtn').addEventListener('click', () => direction = 'UP');
         document.getElementById('leftBtn').addEventListener('click', () => direction = 'LEFT');
         document.getElementById('rightBtn').addEventListener('click', () => direction = 'RIGHT');
         document.getElementById('downBtn').addEventListener('click', () => direction = 'DOWN');
+
+        // Keyboard control for PC
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
+            else if (event.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
+            else if (event.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
+            else if (event.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
+        });
 
         // Check collision with walls and tail
         function collision(newHead, snakeArray) {
@@ -75,8 +83,8 @@
 
             // Draw borders if collision occurs
             if (collision(snake[0], snake.slice(1)) || snake[0].x < 0 || snake[0].y < 0 || snake[0].x >= canvasSize || snake[0].y >= canvasSize) {
-                ctx.strokeStyle = 'yellow';
-                ctx.strokeRect(0, 0, canvasSize, canvasSize);
+                ctx.fillStyle = 'yellow';
+                ctx.fillRect(0, 0, canvasSize, canvasSize);
             }
 
             // Draw snake
@@ -134,3 +142,4 @@
     </script>
 </body>
 </html>
+
