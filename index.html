@@ -31,15 +31,21 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        @media (max-width: 600px) {
+            canvas {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div class="controls">
-        <button class="btn" id="upBtn">UP</button><br>
-        <button class="btn" id="leftBtn">LEFT</button>
-        <button class="btn" id="rightBtn">RIGHT</button><br>
-        <button class="btn" id="downBtn">DOWN</button>
+        <button class="btn" id="upBtn">↑</button><br>
+        <button class="btn" id="leftBtn">←</button>
+        <button class="btn" id="rightBtn">→</button><br>
+        <button class="btn" id="downBtn">↓</button>
     </div>
 
     <script>
@@ -62,12 +68,15 @@
         document.getElementById('downBtn').addEventListener('click', () => direction = 'DOWN');
 
         // Keyboard control for PC
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Handle keyboard input
+        function handleKeyDown(event) {
             if (event.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
             else if (event.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
             else if (event.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
             else if (event.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
-        });
+        }
 
         // Check collision with walls and tail
         function collision(newHead, snakeArray) {
@@ -142,3 +151,4 @@
     </script>
 </body>
 </html>
+
