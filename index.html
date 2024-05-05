@@ -1,154 +1,83 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        canvas {
-            display: block;
-            margin: 20px auto;
-            background-color: #fff;
-            border: 1px solid #ccc;
-        }
-        .controls {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .btn {
-            display: inline-block;
-            margin: 5px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        @media (max-width: 600px) {
-            canvas {
-                width: 100%;
-                max-width: 400px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random YouTube Video</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  .container {
+    text-align: center;
+  }
+  input[type="text"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  #video-container {
+    margin-top: 20px;
+  }
+</style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div class="controls">
-        <button class="btn" id="upBtn">↑</button><br>
-        <button class="btn" id="leftBtn">←</button>
-        <button class="btn" id="rightBtn">→</button><br>
-        <button class="btn" id="downBtn">↓</button>
-    </div>
 
-    <script>
-        // Constants
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const box = 20;
-        const canvasSize = 400;
+<div class="container">
+  <h1>Random YouTube Video Generator</h1>
+  <input type="text" id="name" placeholder="Enter your name">
+  <button onclick="generateVideo()">Generate Video</button>
+  <div id="video-container"></div>
+</div>
 
-        // Initial snake position
-        let snake = [{x: 10 * box, y: 10 * box}];
-        let food = {x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box};
-        let score = 0;
-        let direction;
+<script>
+  function generateVideo() {
+    var name = document.getElementById("name").value.trim();
+    if (name === "") {
+      alert("Please enter your name.");
+      return;
+    }
 
-        // Directional buttons for mobile control
-        document.getElementById('upBtn').addEventListener('click', () => direction = 'UP');
-        document.getElementById('leftBtn').addEventListener('click', () => direction = 'LEFT');
-        document.getElementById('rightBtn').addEventListener('click', () => direction = 'RIGHT');
-        document.getElementById('downBtn').addEventListener('click', () => direction = 'DOWN');
+    var videos = [
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // Rick Astley - Never Gonna Give You Up
+      "https://www.youtube.com/watch?v=IcrbM1l_BoI", // Nyan Cat
+      "https://www.youtube.com/watch?v=63M8FXjv5pI", // Keyboard Cat
+      "https://www.youtube.com/watch?v=8UFIYGkROII"  // Sneezing Panda
+      // Add more YouTube video links here
+    ];
 
-        // Keyboard control for PC
-        document.addEventListener('keydown', handleKeyDown);
+    var randomIndex = Math.floor(Math.random() * videos.length);
+    var randomVideo = videos[randomIndex];
 
-        // Handle keyboard input
-        function handleKeyDown(event) {
-            if (event.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
-            else if (event.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
-            else if (event.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
-            else if (event.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
-        }
+    var videoContainer = document.getElementById("video-container");
+    videoContainer.innerHTML = `
+      <iframe width="560" height="315" src="${randomVideo}?autoplay=1" frameborder="0" allowfullscreen></iframe>
+    `;
+  }
+</script>
 
-        // Check collision with walls and tail
-        function collision(newHead, snakeArray) {
-            return (
-                newHead.x < 0 || newHead.y < 0 || newHead.x >= canvasSize || newHead.y >= canvasSize ||
-                snakeArray.some(segment => segment.x === newHead.x && segment.y === newHead.y)
-            );
-        }
-
-        function draw() {
-            // Clear canvas
-            ctx.clearRect(0, 0, canvasSize, canvasSize);
-
-            // Draw borders if collision occurs
-            if (collision(snake[0], snake.slice(1)) || snake[0].x < 0 || snake[0].y < 0 || snake[0].x >= canvasSize || snake[0].y >= canvasSize) {
-                ctx.fillStyle = 'yellow';
-                ctx.fillRect(0, 0, canvasSize, canvasSize);
-            }
-
-            // Draw snake
-            snake.forEach(segment => {
-                ctx.beginPath();
-                ctx.arc(segment.x + box / 2, segment.y + box / 2, box / 2, 0, 2 * Math.PI);
-                ctx.fillStyle = (segment === snake[0]) ? 'green' : 'lime';
-                ctx.fill();
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            });
-
-            // Draw food
-            ctx.beginPath();
-            ctx.arc(food.x + box / 2, food.y + box / 2, box / 2, 0, 2 * Math.PI);
-            ctx.fillStyle = 'red';
-            ctx.fill();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Move the snake
-            let newHead = {x: snake[0].x, y: snake[0].y};
-            if (direction === 'LEFT') newHead.x -= box;
-            if (direction === 'UP') newHead.y -= box;
-            if (direction === 'RIGHT') newHead.x += box;
-            if (direction === 'DOWN') newHead.y += box;
-
-            // If snake eats the food
-            if (newHead.x === food.x && newHead.y === food.y) {
-                score++;
-                food = {x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box};
-            } else {
-                snake.pop();
-            }
-
-            // Game over conditions
-            if (collision(newHead, snake)) {
-                clearInterval(game);
-                alert('Game Over! Your Score: ' + score);
-                location.reload(); // Reload the page to restart the game
-            }
-
-            snake.unshift(newHead);
-
-            // Draw score
-            ctx.fillStyle = 'black';
-            ctx.font = '20px Arial';
-            ctx.fillText('Score: ' + score, 10, 30);
-        }
-
-        // Run the game loop
-        let game = setInterval(draw, 100);
-    </script>
 </body>
 </html>
-
